@@ -9,6 +9,7 @@ import {
 
 import evm from "@wormhole-foundation/sdk/platforms/evm";
 import solana from "@wormhole-foundation/sdk/platforms/solana";
+import sui from "@wormhole-foundation/sdk/platforms/sui";
 
 export interface SignerStuff<N extends Network, C extends Chain> {
   chain: ChainContext<N, C>;
@@ -35,7 +36,13 @@ export async function getSigner<N extends Network, C extends Chain>(
     case "Evm":
       signer = await evm.getSigner(
         await chain.getRpc(),
-        getEnv("ETH_PRIVATE_KEY")
+        getEnv("ETH_PRIVATE_KEY"),
+      );
+      break;
+    case "Sui":
+      signer = await sui.getSigner(
+        await chain.getRpc(),
+        getEnv("SUI_PRIVATE_KEY")
       );
       break;
     default:

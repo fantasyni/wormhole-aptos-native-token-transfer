@@ -7,6 +7,7 @@ target/
 !/broadcast
 /broadcast/*/31337/
 /broadcast/**/dry-run/
+evm/broadcast/*
 
 # Docs
 docs/
@@ -28,3 +29,7 @@ node_modules
 
 # Tilt
 .wormhole
+
+sui/contracts/build/
+sui/contracts/.idea/
+sui/dependencies

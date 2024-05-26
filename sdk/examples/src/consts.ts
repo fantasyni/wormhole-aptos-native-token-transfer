@@ -1,9 +1,21 @@
 import { Chain } from "@wormhole-foundation/sdk";
 import { Ntt } from "@wormhole-foundation/sdk-definitions-ntt";
 import { NttRoute } from "@wormhole-foundation/sdk-route-ntt";
+import { SuiContracts } from "@wormhole-foundation/sdk-sui-ntt";
+
 type NttContracts = {
   [key in Chain]?: Ntt.Contracts;
 };
+
+export const SUI_NTT_CONTRACTS: SuiContracts = {
+  stateObjectId: "0x0ba804ae497349ae5a5c797a070e990a3960882472eba8faa9f248103c45b598",
+  packageId: "0x408be43f5d9f173fcdda13d1ffef24bc9fc7fe553698616a09277855c5c5a030",
+  coreBridgeObjectId: "0x31358d198147da50db32eda2562951d53973a0c0ad5ed738e9b17d88b213d790",
+  coreBridgePackageId: "0xf47329f4344f3bf0f8e436e2f7b485466cff300f12a166563995d3888c296a94",
+  coinType: "0x6a047dba20efbc109e882c1972500d08d91c9b52186a39c3cb664d1d0a149112::justin_coin::JUSTIN_COIN",
+  adminCapObjectId: "0x44e94a2184aaa0c29767cd9a04872c278e146012e9959247286fb6cbbcadd2df",
+  emitterCapId: "0xf1d11d19df22e3f37f885e2b030c83ef1690edff25a8397923f21ca3f62788bc",
+}
 
 export const JITO_NTT_CONTRACTS: NttContracts = {
   Solana: {
@@ -46,6 +58,16 @@ export const TEST_NTT_TOKENS: NttContracts = {
     transceiver: { wormhole: "NTtAaoDJhkeHeaVUHnyhwbPNAN6WgBpHkHBTc6d7vLK" },
     quoter: "Nqd6XqA8LbsCuG8MLWWuP865NV6jR1MbXeKxD4HLKDJ",
   },
+  Celo: {
+    token: "0x5651b006Bc23054490483EF2C911eb62595c152b",
+    manager: "0xFe756f2D911fA62F7F6703fB7BfA139B106A12c5",
+    transceiver: { wormhole: "0x405a3fcfb4c86909eded67db3f05a73b15b25ea8" },
+  },
+  Fantom: {
+    token: "0xf8a5d3c00b8f6cd93cef89d562baf82847bb9a86",
+    manager: "0x9727d9fc676eba9b5322d41bd4d259d455013a3e",
+    transceiver: { wormhole: "0xf6234aaa554437c780c992dCC4593A1Df30c0800" },
+  }
 };
 
 // Reformat NTT contracts to fit TokenConfig for Route
