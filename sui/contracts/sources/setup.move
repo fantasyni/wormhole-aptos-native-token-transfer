@@ -8,6 +8,7 @@ module wormhole_ntt::setup {
     use wormhole::external_address;
     use wormhole::emitter::{EmitterCap};
     use wormhole_ntt::state::{Self, State};
+    use wormhole_ntt::nft::{TreasuryCap as NftTreasuryCap};
 
     /// Capability for admin role actions
     struct AdminCap has key, store {
@@ -39,7 +40,7 @@ module wormhole_ntt::setup {
             ));
     }
 
-    /// add net native token to `WormholeNTT`
+    /// add new native token to `WormholeNTT`
     public fun add_new_native_token<CoinType>(
         _: &AdminCap,
         state: &mut State,
@@ -47,6 +48,16 @@ module wormhole_ntt::setup {
         treasury_cap: TreasuryCap<CoinType>,
     ) {
         state::add_new_native_token(state, coin_meta, treasury_cap);
+    }
+
+    /// add new nft token to `WormholeNTT`
+    public fun add_new_nft<T>(
+        _: &AdminCap,
+        state: &mut State,
+        treasury_cap: NftTreasuryCap<T>,
+        ctx: &mut TxContext
+    ) {
+        state::add_new_nft(state, treasury_cap, ctx);
     }
 
     /// set ntt manager peer contract address to the target chain

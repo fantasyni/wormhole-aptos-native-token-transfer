@@ -405,6 +405,16 @@ export class SolanaNtt<N extends Network, C extends SolanaChains>
     yield this.createUnsignedTx({ transaction: tx }, "Ntt.SetPeer");
   }
 
+  async *transfer_nft(
+    sender: AccountAddress<C>,
+    token_ids: number[],
+    token_id_width: number,
+    destination: ChainAddress,
+    options: Ntt.TransferOptions
+  ): AsyncGenerator<UnsignedTransaction<N, C>> {
+    throw new Error("Method not implemented.");
+  } 
+
   async *transfer(
     sender: AccountAddress<C>,
     amount: bigint,

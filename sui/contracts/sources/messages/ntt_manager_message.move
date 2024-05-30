@@ -16,6 +16,7 @@ module wormhole_ntt::ntt_manager_message {
 
     friend wormhole_ntt::ntt_manager;
     friend wormhole_ntt::transceiver_message;
+    friend wormhole_ntt::non_fungible_ntt_manager;
 
     public(friend) fun new(
         // unique message identifier

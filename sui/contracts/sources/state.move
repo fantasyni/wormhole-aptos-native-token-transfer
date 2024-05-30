@@ -11,10 +11,13 @@ module wormhole_ntt::state {
     use sui::coin::{TreasuryCap, CoinMetadata};
 
     use wormhole::state::chain_id;
+    use wormhole_ntt::nft_registry;
     use wormhole::emitter::{EmitterCap};
     use wormhole::publish_message::{MessageTicket};
     use wormhole::consumed_vaas::{Self, ConsumedVAAs};
+    use wormhole_ntt::nft::{TreasuryCap as NftTreasuryCap};
     use wormhole::external_address::{Self, ExternalAddress};
+    use wormhole_ntt::nft_registry::{NFTRegistry, VerifiedNFT};
     use wormhole_ntt::token_registry::{Self, TokenRegistry, VerifiedAsset};
 
     const MODE_LOCKING: u8 = 0;
@@ -25,9 +28,10 @@ module wormhole_ntt::state {
     const E_INVALID_PEER_DECIMALS: u64 = 2;
     const E_INVALID_PEER_SAME_CHAIN_ID: u64 = 3;
 
-    friend wormhole_ntt::ntt_manager;
     friend wormhole_ntt::setup;
+    friend wormhole_ntt::ntt_manager;
     friend wormhole_ntt::ntt_transceiver;
+    friend wormhole_ntt::non_fungible_ntt_manager;
 
     /// Container for all state variables for WormholeNtt.
     struct State has key, store {
@@ -38,6 +42,8 @@ module wormhole_ntt::state {
         emitter_cap: EmitterCap,
         /// Registry for native tokens.
         token_registry: TokenRegistry,
+        /// Registry for NFT tokens
+        nft_registry: NFTRegistry,
         /// message sequence id use for transfer tokens
         message_sequence: u64,
         /// target chain NttManager contract address table
@@ -81,6 +87,13 @@ module wormhole_ntt::state {
         token_registry::verified_asset(&self.token_registry)
     }
 
+    /// used to create the `VerifiedNFT` through `NFTRegistry`
+    public fun verified_nft<T>(
+        self: &State
+    ): VerifiedNFT<T> {
+        nft_registry::verified_nft<T>(&self.nft_registry)
+    }
+
     /// create new state
     public(friend) fun new(
         mode: u8,
@@ -92,6 +105,7 @@ module wormhole_ntt::state {
             mode,
             emitter_cap,
             token_registry: token_registry::new(ctx),
+            nft_registry: nft_registry::new(ctx),
             message_sequence: 0,
             manager_peers: table::new(ctx),
             transceiver_peers: table::new(ctx),
@@ -127,6 +141,13 @@ module wormhole_ntt::state {
         self: &mut State
     ): &mut TokenRegistry {
         &mut self.token_registry
+    }
+
+    /// borrow mut `NFTRegistry`
+    public(friend) fun borrow_mut_nft_registry(
+        self: &mut State
+    ): &mut NFTRegistry {
+        &mut self.nft_registry
     }
 
     /// Store `VAA` hash as a way to claim a VAA. This method prevents a VAA
@@ -180,6 +201,14 @@ module wormhole_ntt::state {
         treasury_cap: TreasuryCap<CoinType>,
     ) {
         token_registry::add_new_native_token(&mut self.token_registry, coin_meta, treasury_cap);
+    }
+
+    public(friend) fun add_new_nft<T>(
+        self: &mut State,
+        treasury_cap: NftTreasuryCap<T>,
+        ctx: &mut TxContext
+    ) {
+        nft_registry::add_new_nft(&mut self.nft_registry, treasury_cap, ctx);
     }
 
     /// set NttManager peer contract info

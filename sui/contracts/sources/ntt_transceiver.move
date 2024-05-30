@@ -1,12 +1,10 @@
 module wormhole_ntt::ntt_transceiver {
-    use sui::tx_context::TxContext;
-
     use wormhole::bytes32;
     use wormhole::vaa::{Self, VAA};
-    use wormhole_ntt::ntt_manager::{Self};
     use wormhole_ntt::state::{Self, State};
     use wormhole_ntt::transceiver_message::{Self};
     use wormhole::external_address::{Self, ExternalAddress};
+    use wormhole_ntt::redeem_message::{Self, RedeemMessage};
 
     const E_UNEXPECTED_RECIPIENT_NTT_MANAGER_ADDRESS: u64 = 0;
     const E_INVALID_TRANSCEIVER_PEER: u64 = 1;
@@ -65,11 +63,10 @@ module wormhole_ntt::ntt_transceiver {
     }
 
     /// redeem NttTransceiverMessage
-    public fun redeem<CoinType>(
+    public fun redeem<T>(
         state: &mut State,
         message: NttTransceiverMessage,
-        ctx: &mut TxContext
-    ) {
+    ) : RedeemMessage<T> {
         let NttTransceiverMessage {
             emitter_chain,
             sequence: _,
@@ -84,12 +81,14 @@ module wormhole_ntt::ntt_transceiver {
         assert!(recipient_ntt_manager_address == external_address::new(
             bytes32::from_bytes(ntt_manager_address)), E_UNEXPECTED_RECIPIENT_NTT_MANAGER_ADDRESS);
 
-        ntt_manager::attestation_received<CoinType>(
-            state,
-            emitter_chain,
-            source_ntt_manager_address,
-            parsed_ntt_manager_message,
-            ctx
-        );
+        redeem_message::new<T>(emitter_chain, source_ntt_manager_address, parsed_ntt_manager_message)
+
+        // ntt_manager::attestation_received<CoinType>(
+        //     state,
+        //     emitter_chain,
+        //     source_ntt_manager_address,
+        //     parsed_ntt_manager_message,
+        //     ctx
+        // );
     }
 }

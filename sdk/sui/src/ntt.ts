@@ -33,6 +33,7 @@ import { SuiChains } from "@wormhole-foundation/sdk-sui";
 
 import type { SuiClient } from "@mysten/sui.js/client";
 import { TransactionBlock } from "@mysten/sui.js/transactions";
+import type { SuiObjectResponse } from '@mysten/sui.js/client';
 import { SUI_CLOCK_OBJECT_ID, SUI_TYPE_ARG  } from "@mysten/sui.js/utils";
 
 import "@wormhole-foundation/sdk-sui-core";
@@ -42,9 +43,10 @@ export type SuiContracts = {
   packageId: string;
   coreBridgeObjectId: string;
   coreBridgePackageId: string;
-  coinType: string;
+  tokenType: string;
   adminCapObjectId: string;
   emitterCapId: string;
+  nftType: string;
 };
 
 export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C> {
@@ -53,8 +55,9 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
   nttPackageId: string;
   coreBridgeObjectId: string;
   coreBridgePackageId: string;
-  coinType: string;
+  tokenType: string;
   adminCapObjectId: string;
+  nftType: string;
 
   constructor(
     readonly network: N,
@@ -69,8 +72,9 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
     this.nttPackageId = contracts.ntt.packageId;
     this.coreBridgeObjectId = contracts.ntt.coreBridgeObjectId;
     this.coreBridgePackageId = contracts.ntt.coreBridgePackageId;
-    this.coinType = contracts.ntt.coinType;
+    this.tokenType = contracts.ntt.tokenType;
     this.adminCapObjectId = contracts.ntt.adminCapObjectId;
+    this.nftType = contracts.ntt.nftType;
   }
 
   static async fromRpc<N extends Network>(
@@ -137,25 +141,25 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
     const nonce = 0;
     const senderAddress = sender.toString();
 
-    const coinType = this.coinType;
+    const tokenType = this.tokenType;
 
     const coins = (
       await this.provider.getCoins({
         owner: senderAddress,
-        coinType,
+        coinType: tokenType,
       })
     ).data;
 
     const [primaryCoin, ...mergeCoins] = coins.filter((coin) =>
-      isSameType(coin.coinType, coinType),
+      isSameType(coin.coinType, tokenType),
     );
     if (primaryCoin === undefined)
-      throw new Error(`Coins array doesn't contain any coins of type ${coinType}`);
+      throw new Error(`Coins array doesn't contain any coins of type ${tokenType}`);
 
     const tx = new TransactionBlock();
     
     const [transferCoin] = (() => {
-      if (coinType === SUI_TYPE_ARG) {
+      if (tokenType === SUI_TYPE_ARG) {
         return tx.splitCoins(tx.gas, [tx.pure(amount)]);
       } else {
         const primaryCoinInput = tx.object(primaryCoin.coinObjectId);
@@ -173,7 +177,7 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
     const [assetInfo] = tx.moveCall({
       target: `${this.nttPackageId}::state::verified_asset`,
       arguments: [tx.object(this.stateObjectId)],
-      typeArguments: [coinType],
+      typeArguments: [tokenType],
     });
 
     const [transferTicket, dust] = tx.moveCall({
@@ -186,19 +190,19 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
         tx.pure(uint8ArrayToBCS(destination.address.toUint8Array())),
         tx.pure(nonce),
       ],
-      typeArguments: [coinType],
+      typeArguments: [tokenType],
     });
 
     tx.moveCall({
       target: `${this.nttPackageId}::coin_utils::return_nonzero`,
       arguments: [dust!],
-      typeArguments: [coinType],
+      typeArguments: [tokenType],
     });
 
     const [messageTicket] = tx.moveCall({
       target: `${this.nttPackageId}::ntt_manager::transfer_tokens`,
       arguments: [tx.object(this.stateObjectId), transferTicket!],
-      typeArguments: [coinType],
+      typeArguments: [tokenType],
     });
 
     tx.moveCall({
@@ -213,6 +217,64 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
 
     yield this.createUnsignedTx(tx, "Sui.NTT.Transfer");
   }
+
+  async *transfer_nft(
+    sender: AccountAddress<C>,
+    token_ids: number[],
+    token_id_width: number,
+    destination: ChainAddress,
+    options: Ntt.TransferOptions
+): AsyncGenerator<SuiUnsignedTransaction<N, C>> {
+    const feeAmount = 0n;
+    const nonce = 0;
+    const senderAddress = sender.toString();
+
+    const tx = new TransactionBlock();
+
+    const nfts = await this.getNftObjectIds(senderAddress, token_ids);
+
+    const [feeCoin] = tx.splitCoins(tx.gas, [tx.pure(feeAmount)]);
+    const [assetInfo] = tx.moveCall({
+        target: `${this.nttPackageId}::state::verified_nft`,
+        arguments: [tx.object(this.stateObjectId)],
+        typeArguments: [this.tokenType],
+    });
+
+    const [transferTicket] = tx.moveCall({
+        target: `${this.nttPackageId}::non_fungible_ntt_manager::prepare_transfer`,
+        arguments: [
+            tx.object(this.stateObjectId),
+            assetInfo!,
+            tx.makeMoveVec({
+              type: this.nftType,
+              objects: nfts,
+            }),
+            tx.pure(toChainId(destination.chain)),
+            tx.pure(uint8ArrayToBCS(destination.address.toUint8Array())),
+            tx.pure(token_id_width),
+            tx.pure(nonce),
+        ],
+        typeArguments: [this.tokenType],
+    });
+
+    const [messageTicket] = tx.moveCall({
+        target: `${this.nttPackageId}::non_fungible_ntt_manager::transfer_tokens`,
+        arguments: [tx.object(this.stateObjectId), transferTicket!],
+        typeArguments: [this.tokenType],
+    });
+
+    tx.moveCall({
+        target: `${this.coreBridgePackageId}::publish_message::publish_message`,
+        arguments: [
+            tx.object(this.coreBridgeObjectId),
+            feeCoin!,
+            messageTicket!,
+            tx.object(SUI_CLOCK_OBJECT_ID),
+        ],
+    });
+
+    yield this.createUnsignedTx(tx, "Sui.NFT.Transfer");
+}
 
   async *redeem(attestations: Ntt.Attestation[]) {
     const wormholeNTT = attestations[0]! as WormholeNttTransceiver.VAA;
@@ -232,10 +294,16 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
       arguments: [tx.object(this.stateObjectId), verifiedVAA!],
     });
 
-    tx.moveCall({
+    const [redeemMessage] = tx.moveCall({
       target: `${this.nttPackageId}::ntt_transceiver::redeem`,
       arguments: [tx.object(this.stateObjectId), nttTransceiverMessage!],
-      typeArguments: [this.coinType!],
+      typeArguments: [this.tokenType!],
+    });
+
+    tx.moveCall({
+      target: `${this.nttPackageId}::ntt_manager::attestation_received`,
+      arguments: [tx.object(this.stateObjectId), redeemMessage!],
+      typeArguments: [this.tokenType!],
     });
 
     yield this.createUnsignedTx(tx, "Sui.NTT.Redeem");
@@ -306,6 +374,71 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
 
     return this.nttPackageId;
   }
+
+  async getNftObjectIds(owner: string, token_ids: number[]): Promise<string[]> {
+    const nftObjectsResponse: SuiObjectResponse[] = [];
+
+    let hasNextPage = false;
+    let nextCursor: string | null | undefined = null;
+    do {
+        const paginatedKeyObjectsResponse = await this.provider
+            .getOwnedObjects({
+                owner,
+                filter: {
+                    StructType: this.nftType,
+                },
+                cursor: nextCursor,
+            });
+            console.log(paginatedKeyObjectsResponse.data);
+        nftObjectsResponse.push(...paginatedKeyObjectsResponse.data);
+        if (paginatedKeyObjectsResponse.hasNextPage && paginatedKeyObjectsResponse.nextCursor) {
+            hasNextPage = true;
+            nextCursor = paginatedKeyObjectsResponse.nextCursor;
+        } else {
+            hasNextPage = false;
+        }
+    } while (hasNextPage);
+
+    const keyObjectIds: string[] = nftObjectsResponse
+        .map((ref: any) => ref?.data?.objectId)
+        .filter((id: any) => id !== undefined);
+    const keyObjects = await this.provider.multiGetObjects({
+        ids: keyObjectIds,
+        options: {
+            showContent: true,
+            showDisplay: true,
+            showType: true,
+            showOwner: true
+        }
+    });
+
+    var results: string[] = [];
+
+    for (const keyObject of keyObjects) {
+        if (keyObject.data) {
+            var keyObjectData = keyObject.data;
+            const keyId = keyObjectData.objectId;
+            if (keyObjectData.content && 'fields' in keyObjectData.content) {
+                const fields = keyObjectData.content.fields as any;
+                const token_id = Number(fields.token_id);
+                for (var i = 0; i < token_ids.length; i++) {
+                    if (token_id == token_ids[i]) {
+                        results.push(keyId);
+                        break;
+                    }
+                }
+
+               
+            }
+        }
+    }
+
+    if (results.length != token_ids.length) {
+      throw new Error("nft with token_ids is not Valid");
+    }
+
+    return results;
+}
 
   private createUnsignedTx(
     txReq: TransactionBlock,

@@ -4,9 +4,10 @@ module wormhole_ntt::native_token {
     use sui::coin::{Self, CoinMetadata, TreasuryCap};
 
     use wormhole::state::{chain_id};
+    use wormhole::external_address::{Self, ExternalAddress};
+
     friend wormhole_ntt::ntt_manager;
     friend wormhole_ntt::token_registry;
-    use wormhole::external_address::{Self, ExternalAddress};
 
     /// Container for storing token address, custodied `Balance`, and `TreasuryCap` .
     struct NativeToken<phantom C> has store {

@@ -26,7 +26,9 @@ module wormhole_ntt::transceiver_registration {
         }
     }
 
-    public(friend) fun encode_transceiver_registration(message: TransceiverRegistration): vector<u8> {
+    public(friend) fun encode_transceiver_registration(
+        message: TransceiverRegistration
+    ): vector<u8> {
         let TransceiverRegistration {
             transceiver_identifier,
             transceiver_chainId,
@@ -42,7 +44,10 @@ module wormhole_ntt::transceiver_registration {
         buf
     }
 
-    public(friend) fun decode_transceiver_registration(expected_prefix: Bytes4, encoded: vector<u8>): TransceiverRegistration {
+    public(friend) fun decode_transceiver_registration(
+        expected_prefix: Bytes4,
+        encoded: vector<u8>
+    ): TransceiverRegistration {
         let cur = cursor::new(encoded);
 
         let transceiver_identifier = bytes4::take(&mut cur);

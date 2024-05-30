@@ -13,6 +13,7 @@ module wormhole_ntt::transceiver_message {
 
     friend wormhole_ntt::ntt_manager;
     friend wormhole_ntt::ntt_transceiver;
+    friend wormhole_ntt::non_fungible_ntt_manager;
 
     struct TransceiverMessage {
         // Address of the contract that emitted this message, in sui it is the State object id.

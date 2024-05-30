@@ -31,6 +31,9 @@ module wormhole_ntt::token_registry {
     /// Wrapper of coin type to act as dynamic field key.
     struct Key<phantom CoinType> has copy, drop, store {}
 
+    /// Wrapper of nft type to act as dynamic field key.
+    struct NFTKey<phantom NFTType> has copy, drop, store {}
+
     /// Determine whether a particular coin type is registered.
     public fun has<CoinType>(self: &TokenRegistry): bool {
         dynamic_field::exists_(&self.id, Key<CoinType> {})
@@ -69,18 +72,18 @@ module wormhole_ntt::token_registry {
         dynamic_field::borrow(&self.id, Key<CoinType> {})
     }
 
-    /// Retrieve number of tokens registered in `TokenRegistry`.
-    public fun num_tokens(
-        self: &TokenRegistry
-    ): u64 {
-        self.num_tokens
-    }
-
     /// borrow mut native token
     public(friend) fun borrow_mut_native<CoinType>(
         self: &mut TokenRegistry
     ): &mut NativeToken<CoinType> {
         dynamic_field::borrow_mut(&mut self.id, Key<CoinType> {})
+    }
+
+    /// Retrieve number of tokens registered in `TokenRegistry`.
+    public fun num_tokens(
+        self: &TokenRegistry
+    ): u64 {
+        self.num_tokens
     }
 
     /// Retrieve canonical token chain id from `VerifiedAsset`.

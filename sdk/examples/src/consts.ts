@@ -8,13 +8,14 @@ type NttContracts = {
 };
 
 export const SUI_NTT_CONTRACTS: SuiContracts = {
-  stateObjectId: "0x0ba804ae497349ae5a5c797a070e990a3960882472eba8faa9f248103c45b598",
-  packageId: "0x408be43f5d9f173fcdda13d1ffef24bc9fc7fe553698616a09277855c5c5a030",
+  stateObjectId: "0xdf754b9fa363f15292dc7ff4f6b29653afa18201f4c7b55fef6f0414db181a02",
+  packageId: "0xa0501c44671d952d9703617150a05107cce9be42c4db946d07b618d42b2ef21a",
   coreBridgeObjectId: "0x31358d198147da50db32eda2562951d53973a0c0ad5ed738e9b17d88b213d790",
   coreBridgePackageId: "0xf47329f4344f3bf0f8e436e2f7b485466cff300f12a166563995d3888c296a94",
-  coinType: "0x6a047dba20efbc109e882c1972500d08d91c9b52186a39c3cb664d1d0a149112::justin_coin::JUSTIN_COIN",
-  adminCapObjectId: "0x44e94a2184aaa0c29767cd9a04872c278e146012e9959247286fb6cbbcadd2df",
-  emitterCapId: "0xf1d11d19df22e3f37f885e2b030c83ef1690edff25a8397923f21ca3f62788bc",
+  tokenType: "0x7d69e6268080a452e1577412108257a637fa16b21e1a1b67471b5b7fbdd205ab::justin_nft::JUSTIN_NFT",
+  adminCapObjectId: "0xca8c69a7ae00014c562e349ae06d46ee3938210ef621b70b7999eb6e78e66502",
+  emitterCapId: "0x656668c254307a926280abd1586d716ec4da18cf60d9a6f88827747cc5c7111b",
+  nftType: "0xa0501c44671d952d9703617150a05107cce9be42c4db946d07b618d42b2ef21a::nft::NFT<0x7d69e6268080a452e1577412108257a637fa16b21e1a1b67471b5b7fbdd205ab::justin_nft::JUSTIN_NFT>"
 }
 
 export const JITO_NTT_CONTRACTS: NttContracts = {

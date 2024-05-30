@@ -253,6 +253,16 @@ export class EvmNtt<N extends Network, C extends EvmChains>
     yield* this.xcvrs[0]!.setPeer(peer);
   }
 
+  async *transfer_nft(
+    sender: AccountAddress<C>,
+    token_ids: number[],
+    token_id_width: number,
+    destination: ChainAddress,
+    options: Ntt.TransferOptions
+  ): AsyncGenerator<EvmUnsignedTransaction<N, C>> {
+    throw new Error("Method not implemented.");
+  } 
+
   async *transfer(
     sender: AccountAddress<C>,
     amount: bigint,

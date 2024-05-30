@@ -2,27 +2,25 @@ module wormhole_ntt::ntt_manager {
     use sui::coin::{Self, Coin};
     use sui::balance::{Self, Balance};
     use sui::tx_context::{Self, TxContext};
-    use wormhole::external_address;
-    use wormhole::external_address::ExternalAddress;
 
     use wormhole::bytes32::{Self};
-    use wormhole_ntt::state::{Self, State};
     use wormhole_ntt::transceiver_message;
+    use wormhole_ntt::state::{Self, State};
     use wormhole_ntt::native_token::{Self};
     use wormhole_ntt::token_registry::{Self};
     use wormhole::publish_message::MessageTicket;
+    use wormhole_ntt::ntt_manager_message::{Self};
     use wormhole_ntt::native_token_transfer::{Self};
     use wormhole_ntt::token_registry::VerifiedAsset;
     use wormhole_ntt::trimmed_amount::{Self, TrimmedAmount};
-    use wormhole_ntt::ntt_manager_message::{Self, NttManagerMessage};
+    use wormhole_ntt::redeem_message::{Self, RedeemMessage};
+    use wormhole::external_address::{Self, ExternalAddress};
 
     const E_INVALID_STATE_MODE: u64 = 1;
     const E_INVALID_PEER: u64 = 2;
     const E_INVALID_TARGET_CHAIN: u64 = 3;
     const E_INVALID_MODE: u64 = 4;
     const E_INVALID_PEER_DECIMALS: u64 = 5;
-
-    friend wormhole_ntt::ntt_transceiver;
 
     struct TransferTicket<phantom CoinType> {
         /// verified asset info
@@ -126,14 +124,14 @@ module wormhole_ntt::ntt_manager {
         )
     }
 
-    /// called from transceiver after attestation received to tokens
-    public(friend) fun attestation_received<CoinType>(
+    /// attestation received to tokens
+    public fun attestation_received<CoinType>(
         state: &mut State,
-        source_chain_id: u16,
-        source_ntt_manager_address: ExternalAddress,
-        payload: NttManagerMessage,
+        message: RedeemMessage<CoinType>,
         ctx: &mut TxContext
     ) {
+        let (source_chain_id, source_ntt_manager_address, payload) = redeem_message::into_redeem_message(message);
+
         let peer_address = state::get_manager_peer_address(state, source_chain_id);
         assert!(external_address::new(bytes32::from_bytes(peer_address)) == source_ntt_manager_address, E_INVALID_PEER);
 

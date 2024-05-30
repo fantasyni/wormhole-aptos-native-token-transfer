@@ -32,7 +32,9 @@ module wormhole_ntt::transceiver_init {
         }
     }
 
-    public(friend) fun encode_transceiver_init(message: TransceiverInit): vector<u8> {
+    public(friend) fun encode_transceiver_init(
+        message: TransceiverInit
+    ): vector<u8> {
         let TransceiverInit {
             transceiver_identifer,
             ntt_manager_address,
@@ -52,7 +54,10 @@ module wormhole_ntt::transceiver_init {
         buf
     }
 
-    public(friend) fun decode_transceiver_init(expected_prefix: Bytes4, encoded: vector<u8>): TransceiverInit {
+    public(friend) fun decode_transceiver_init(
+        expected_prefix: Bytes4,
+        encoded: vector<u8>
+    ): TransceiverInit {
         let cur = cursor::new(encoded);
 
         let transceiver_identifer = bytes4::take(&mut cur);

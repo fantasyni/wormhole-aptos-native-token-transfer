@@ -168,6 +168,23 @@ export interface Ntt<N extends Network, C extends Chain> {
   ): AsyncGenerator<UnsignedTransaction<N, C>>;
 
   /**
+   * transfer sends a message to the Ntt manager to initiate a transfer
+   * @param sender the address of the sender
+   * @param token_ids nft token ids
+   * @param token_id_width nft token id width
+   * @param destination the destination chain
+   * @param queue whether to queue the transfer if the outbound capacity is exceeded
+   * @param relay whether to relay the transfer
+   */
+  transfer_nft(
+    sender: AccountAddress<C>,
+    token_ids: number[],
+    token_id_width: number,
+    destination: ChainAddress,
+    options: Ntt.TransferOptions
+  ): AsyncGenerator<UnsignedTransaction<N, C>>;
+
+  /**
    * redeem redeems a set of Attestations to the corresponding transceivers on the destination chain
    * @param attestations The attestations to redeem, the length should be equal to the number of transceivers
    */
