@@ -24,7 +24,7 @@ import {
       ntt: SUI_NTT_CONTRACTS,
     });
   
-    let peer_address = Wormhole.chainAddress(dst.chain, "0x9727d9fc676eba9b5322d41bd4d259d455013a3e");
+    let peer_address = Wormhole.chainAddress(dst.chain, "0x04b05134353c0150498d851c3d1a196ddd4a2a5a");
     // Initiate the transfer (or set to recoverTxids to complete transfer)
     let txids = await signSendWait(src,
       srcNtt.setPeer(peer_address, 18, 10000000n),
@@ -32,7 +32,7 @@ import {
     );
     console.log("Source txs", txids);
 
-    peer_address = Wormhole.chainAddress(dst.chain, "0xf6234aaa554437c780c992dCC4593A1Df30c0800");
+    peer_address = Wormhole.chainAddress(dst.chain, "0x16cf26bdd9d31f7337d72a42a696861364244431");
     txids = await signSendWait(src,
       srcNtt.setWormholeTransceiverPeer(peer_address),
       srcSigner.signer

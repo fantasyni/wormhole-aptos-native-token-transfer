@@ -86,16 +86,17 @@ tx.moveCall({
 2. **Receive**
 The Wormhole Transceiver receives a verified Wormhole message on sui via Wormhole core `vaa::parse_and_verify` to generate parsed `VAA` message  
 and then use this `VAA` message to call `ntt_transceiver::verify_only_once` to generate `nttTransceiverMessage`  
-and then use this `nttTransceiverMessage` to call `ntt_transceiver::redeem` to execute this instruction  
+and then use this `nttTransceiverMessage` to call `ntt_transceiver::redeem` to generate `redeemMessage`
+and then use this `redeemMessage` to call `ntt_manager::attestation_received` to mint or unlock tokens
 
 ```
 const tx = new TransactionBlock();
 const [verifiedVAA] = tx.moveCall({
     target: `${this.coreBridgePackageId}::vaa::parse_and_verify`,
     arguments: [
-        tx.object(this.coreBridgeObjectId),
-        tx.pure(uint8ArrayToBCS(serialize(wormholeNTT))),
-        tx.object(SUI_CLOCK_OBJECT_ID),
+    tx.object(this.coreBridgeObjectId),
+    tx.pure(uint8ArrayToBCS(serialize(wormholeNTT))),
+    tx.object(SUI_CLOCK_OBJECT_ID),
     ],
 });
 
@@ -104,10 +105,16 @@ const [nttTransceiverMessage] = tx.moveCall({
     arguments: [tx.object(this.stateObjectId), verifiedVAA!],
 });
 
-tx.moveCall({
+const [redeemMessage] = tx.moveCall({
     target: `${this.nttPackageId}::ntt_transceiver::redeem`,
     arguments: [tx.object(this.stateObjectId), nttTransceiverMessage!],
-    typeArguments: [this.coinType!],
+    typeArguments: [this.tokenType!],
+});
+
+tx.moveCall({
+    target: `${this.nttPackageId}::ntt_manager::attestation_received`,
+    arguments: [tx.object(this.stateObjectId), redeemMessage!],
+    typeArguments: [this.tokenType!],
 });
 ```
 

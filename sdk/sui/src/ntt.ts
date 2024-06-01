@@ -389,7 +389,6 @@ export class SuiNtt<N extends Network, C extends SuiChains> implements Ntt<N, C>
                 },
                 cursor: nextCursor,
             });
-            console.log(paginatedKeyObjectsResponse.data);
         nftObjectsResponse.push(...paginatedKeyObjectsResponse.data);
         if (paginatedKeyObjectsResponse.hasNextPage && paginatedKeyObjectsResponse.nextCursor) {
             hasNextPage = true;

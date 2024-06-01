@@ -8,14 +8,14 @@ type NttContracts = {
 };
 
 export const SUI_NTT_CONTRACTS: SuiContracts = {
-  stateObjectId: "0xdf754b9fa363f15292dc7ff4f6b29653afa18201f4c7b55fef6f0414db181a02",
-  packageId: "0xa0501c44671d952d9703617150a05107cce9be42c4db946d07b618d42b2ef21a",
+  stateObjectId: "0x2bbbc8a3c3a4aa922515c76b75559d3e1cb1d1d3c03550bd27ddaba0ba923506",
+  packageId: "0x8d143847d58cdd495b886e04f1a69d98f67b70c9cb0bcc96e76ac6ef71900041",
   coreBridgeObjectId: "0x31358d198147da50db32eda2562951d53973a0c0ad5ed738e9b17d88b213d790",
   coreBridgePackageId: "0xf47329f4344f3bf0f8e436e2f7b485466cff300f12a166563995d3888c296a94",
-  tokenType: "0x7d69e6268080a452e1577412108257a637fa16b21e1a1b67471b5b7fbdd205ab::justin_nft::JUSTIN_NFT",
-  adminCapObjectId: "0xca8c69a7ae00014c562e349ae06d46ee3938210ef621b70b7999eb6e78e66502",
-  emitterCapId: "0x656668c254307a926280abd1586d716ec4da18cf60d9a6f88827747cc5c7111b",
-  nftType: "0xa0501c44671d952d9703617150a05107cce9be42c4db946d07b618d42b2ef21a::nft::NFT<0x7d69e6268080a452e1577412108257a637fa16b21e1a1b67471b5b7fbdd205ab::justin_nft::JUSTIN_NFT>"
+  tokenType: "0x76388c6a660c9662aaaa7d950cfbb15e0472a7e60f6c09f7bbf6e3363f045237::justin_coin::JUSTIN_COIN",
+  adminCapObjectId: "0xb4721d5a0b5ee7c4c182b1b93c81b9b05e0e06532136f92080f7e025f4a30978",
+  emitterCapId: "0x1da0ee1573ccd4232765c16b9e1a61d898477cadec8b41e2173b812a5b115d55",
+  nftType: "",
 }
 
 export const JITO_NTT_CONTRACTS: NttContracts = {
@@ -65,9 +65,9 @@ export const TEST_NTT_TOKENS: NttContracts = {
     transceiver: { wormhole: "0x405a3fcfb4c86909eded67db3f05a73b15b25ea8" },
   },
   Fantom: {
-    token: "0xf8a5d3c00b8f6cd93cef89d562baf82847bb9a86",
-    manager: "0x9727d9fc676eba9b5322d41bd4d259d455013a3e",
-    transceiver: { wormhole: "0xf6234aaa554437c780c992dCC4593A1Df30c0800" },
+    token: "0xf85e513341444c6cb1a5b05f788bfe3cc17e2ce9",
+    manager: "0x04b05134353c0150498d851c3d1a196ddd4a2a5a",
+    transceiver: { wormhole: "0x16cf26bdd9d31f7337d72a42a696861364244431" },
   }
 };
 

@@ -7,8 +7,11 @@ module wormhole_ntt::ntt_manager_message {
     use wormhole::external_address::{Self, ExternalAddress};
 
     struct NttManagerMessage {
+        // unique message identifier
         id: Bytes32,
+        // original message sender address.
         sender: ExternalAddress,
+        // payload that corresponds to the type.
         payload: vector<u8>,
     }
 
@@ -19,11 +22,8 @@ module wormhole_ntt::ntt_manager_message {
     friend wormhole_ntt::non_fungible_ntt_manager;
 
     public(friend) fun new(
-        // unique message identifier
         id: Bytes32,
-        // original message sender address.
         sender: ExternalAddress,
-        // payload that corresponds to the type.
         payload: vector<u8>
     ): NttManagerMessage {
         NttManagerMessage {

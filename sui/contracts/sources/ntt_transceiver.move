@@ -82,13 +82,5 @@ module wormhole_ntt::ntt_transceiver {
             bytes32::from_bytes(ntt_manager_address)), E_UNEXPECTED_RECIPIENT_NTT_MANAGER_ADDRESS);
 
         redeem_message::new<T>(emitter_chain, source_ntt_manager_address, parsed_ntt_manager_message)
-
-        // ntt_manager::attestation_received<CoinType>(
-        //     state,
-        //     emitter_chain,
-        //     source_ntt_manager_address,
-        //     parsed_ntt_manager_message,
-        //     ctx
-        // );
     }
 }

@@ -29,10 +29,8 @@ import {
       ntt: SUI_NTT_CONTRACTS,
     });
 
-    console.log(dstSigner);
-  
     const txids: TransactionId[] = await signSendWait(src,
-      srcNtt.transfer(srcSigner.address.address, 10000_000_000n, dstSigner.address, {
+      srcNtt.transfer(srcSigner.address.address, 1_000000_000000_000000n, dstSigner.address, {
         queue: false,
         automatic: false,
         gasDropoff: 0n,

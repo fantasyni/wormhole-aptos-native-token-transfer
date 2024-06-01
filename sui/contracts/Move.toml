@@ -3,7 +3,7 @@ name = "WormholeNtt"
 edition = "legacy" # edition = "legacy" to use legacy (pre-2024) Move
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
-published-at = "0xa0501c44671d952d9703617150a05107cce9be42c4db946d07b618d42b2ef21a"
+#published-at = "0xa0501c44671d952d9703617150a05107cce9be42c4db946d07b618d42b2ef21a"
 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
@@ -20,7 +20,7 @@ Wormhole = { local = "../dependencies/wormhole" }
 # Override = { local = "../conflicting/version", override = true }
 
 [addresses]
-wormhole_ntt = "0xa0501c44671d952d9703617150a05107cce9be42c4db946d07b618d42b2ef21a"
+wormhole_ntt = "0x0"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.

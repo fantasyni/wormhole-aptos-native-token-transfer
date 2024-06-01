@@ -31,7 +31,7 @@ import {
   
     // Initiate the transfer (or set to recoverTxids to complete transfer)
     const txids: TransactionId[] = await signSendWait(src,
-      srcNtt.transfer(srcSigner.address.address, 1000_000_000n, dstSigner.address, {
+      srcNtt.transfer(srcSigner.address.address, 1_000_000_000n, dstSigner.address, {
         queue: false,
         automatic: false,
         gasDropoff: 0n,
