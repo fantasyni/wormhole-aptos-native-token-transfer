@@ -1,0 +1,11 @@
+[package]
+name = "JustinCoin"
+version = "0.0.0"
+
+[addresses]
+JustinCoin = "0x9b2916b5f46b5600d72c3a32624794d05bbad5e50de62853baeaad97887c386d"
+
+[dependencies]
+AptosFramework = {git = "https://github.com/aptos-labs/aptos-core.git", rev = "mainnet", subdir = "aptos-move/framework/aptos-framework"}
+#AptosFramework = {local = "C:\\Users\\Administrator\\.move\\https___github_com_aptos-labs_aptos-core_git_mainnet", subdir = "aptos-move/framework/aptos-framework"}
+#AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework/", rev = "6f83bc6d02207298b2dee91133d75538789bf582" }

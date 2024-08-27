@@ -1,0 +1,18 @@
+[package]
+name = "wormhole_ntt"
+version = "1.0.0"
+authors = []
+
+[addresses]
+#wormhole_ntt = "0x9b2916b5f46b5600d72c3a32624794d05bbad5e50de62853baeaad97887c386d"
+wormhole_ntt = "_"
+admin_addr = "0x9b2916b5f46b5600d72c3a32624794d05bbad5e50de62853baeaad97887c386d"
+
+[dev-addresses]
+
+[dependencies]
+AptosFramework = {git = "https://github.com/aptos-labs/aptos-core.git", rev = "mainnet", subdir = "aptos-move/framework/aptos-framework"}
+Wormhole = { local = "../wormhole" }
+Deployer = { local = "../deployer" }
+
+[dev-dependencies]

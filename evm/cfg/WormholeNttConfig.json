@@ -1,0 +1,24 @@
+{
+    "contracts": [
+        {
+            "chainId": 21,
+            "decimals": 9,
+            "inboundLimit": 1000000000000000000000,
+            "isEvmChain": false,
+            "isWormholeRelayingEnabled": false,
+            "isSpecialRelayingEnabled": false,
+            "nttManager": "0x2bbbc8a3c3a4aa922515c76b75559d3e1cb1d1d3c03550bd27ddaba0ba923506",
+            "wormholeTransceiver": "0x1da0ee1573ccd4232765c16b9e1a61d898477cadec8b41e2173b812a5b115d55"
+        },
+        {
+            "chainId": 10,
+            "decimals": 18,
+            "inboundLimit": 1000000000000000000000,
+            "isEvmChain": true,
+            "isWormholeRelayingEnabled": false,
+            "isSpecialRelayingEnabled": false,
+            "nttManager": "0x04b05134353c0150498d851c3d1a196ddd4a2a5a",
+            "wormholeTransceiver": "0x16cf26bdd9d31f7337d72a42a696861364244431"
+        }
+    ]
+}

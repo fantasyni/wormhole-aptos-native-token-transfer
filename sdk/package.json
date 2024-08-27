@@ -9,6 +9,7 @@
     "build:solana": "npm run build --workspace=definitions --workspace=solana",
     "build:evm": "npm run build --workspace=definitions --workspace=evm",
     "build:sui": "npm run build --workspace=definitions --workspace=sui",
+    "build:aptos": "npm run build --workspace=definitions --workspace=aptos",
     "generate": "npm run generate --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:ci": "CI=true jest --config ./jest.config.ts",
@@ -40,6 +41,7 @@
     "evm",
     "sui",
     "route",
-    "examples"
+    "examples",
+    "aptos"
   ]
 }

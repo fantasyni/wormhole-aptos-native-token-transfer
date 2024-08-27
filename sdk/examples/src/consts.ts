@@ -2,6 +2,7 @@ import { Chain } from "@wormhole-foundation/sdk";
 import { Ntt } from "@wormhole-foundation/sdk-definitions-ntt";
 import { NttRoute } from "@wormhole-foundation/sdk-route-ntt";
 import { SuiContracts } from "@wormhole-foundation/sdk-sui-ntt";
+import { AptosContracts } from "@wormhole-foundation/sdk-aptos-ntt";
 
 type NttContracts = {
   [key in Chain]?: Ntt.Contracts;
@@ -16,6 +17,11 @@ export const SUI_NTT_CONTRACTS: SuiContracts = {
   adminCapObjectId: "0xb4721d5a0b5ee7c4c182b1b93c81b9b05e0e06532136f92080f7e025f4a30978",
   emitterCapId: "0x1da0ee1573ccd4232765c16b9e1a61d898477cadec8b41e2173b812a5b115d55",
   nftType: "",
+}
+
+export const APTOS_NTT_CONTRACTS: AptosContracts = {
+  packageId: "0x2b76176b725bca5b8894244e23da1fd8b739f79b767b4fc6884ac6ba66ebc5dc",
+  tokenType: "0x9b2916b5f46b5600d72c3a32624794d05bbad5e50de62853baeaad97887c386d::justin_coin::JustinCoin"
 }
 
 export const JITO_NTT_CONTRACTS: NttContracts = {
