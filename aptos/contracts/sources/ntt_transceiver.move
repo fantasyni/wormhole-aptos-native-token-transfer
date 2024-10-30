@@ -28,32 +28,40 @@ module wormhole_ntt::ntt_transceiver {
         sequence: u64
     }
 
-    public entry fun submit_vaa<CoinType>(vaa: vector<u8>) {
-        let vaa = ntt_vaa::parse_verify_and_replay_protect(vaa);
+    public entry fun submit_vaa(
+        object_address: address,
+        token_address: address,
+        vaa: vector<u8>
+    ) {
+        let vaa = ntt_vaa::parse_verify_and_replay_protect(object_address, vaa);
         let emitter_chain = wormhole_vaa::get_emitter_chain(&vaa);
         let emitter_address = wormhole_vaa::get_emitter_address(&vaa);
         let payload = wormhole_vaa::destroy(vaa);
 
         let emitter_chain_u16: u16 = ((U16::to_u64(emitter_chain)) as u16);
 
-        let transceiver_peer_address = ntt_state::get_transceiver_peer_address(emitter_chain_u16);
+        let transceiver_peer_address = ntt_state::get_transceiver_peer_address(object_address, emitter_chain_u16);
         let transceiver_peer_address_wormhole = ntt_external_address::to_wormhole_external_address(transceiver_peer_address);
         assert!(transceiver_peer_address_wormhole == emitter_address, E_INVALID_TRANSCEIVER_PEER);
 
         let (source_ntt_manager_address, recipient_ntt_manager_address, parsed_ntt_manager_message)
             = transceiver_message::parse_transceiver_and_ntt_manager_message(payload);
 
-        let ntt_manager_address = ntt_state::package_address();
+        let ntt_manager_address = ntt_state::package_address(object_address);
 
         assert!(recipient_ntt_manager_address == ntt_external_address::new(
             bytes32::from_address(ntt_manager_address)), E_UNEXPECTED_RECIPIENT_NTT_MANAGER_ADDRESS);
 
-        let message = redeem_message::new<CoinType>(emitter_chain_u16, source_ntt_manager_address, parsed_ntt_manager_message);
+        let message = redeem_message::new(emitter_chain_u16, source_ntt_manager_address, parsed_ntt_manager_message);
 
-        ntt_manager::attestation_received(message);
+        ntt_manager::attestation_received(object_address, token_address, message);
     }
 
-    public entry fun submit_vaa_entry<CoinType>(vaa: vector<u8>) {
-        submit_vaa<CoinType>(vaa);
+    public entry fun submit_vaa_entry(
+        object_address: address,
+        token_address: address,
+        vaa: vector<u8>
+    ) {
+        submit_vaa(object_address, token_address, vaa);
     }
 }

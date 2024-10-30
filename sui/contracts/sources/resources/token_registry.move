@@ -7,6 +7,7 @@ module wormhole_ntt::token_registry {
     use wormhole::external_address::ExternalAddress;
     use wormhole_ntt::native_token::{Self, NativeToken};
 
+    friend wormhole_ntt::setup;
     friend wormhole_ntt::state;
     friend wormhole_ntt::ntt_manager;
 

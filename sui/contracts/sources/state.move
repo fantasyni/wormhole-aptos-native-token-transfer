@@ -5,7 +5,7 @@ module wormhole_ntt::state {
     use std::vector;
     use sui::object;
     use sui::event::emit;
-    use sui::object::UID;
+    use sui::object::{UID, ID};
     use sui::table::{Self, Table};
     use sui::tx_context::TxContext;
     use sui::coin::{TreasuryCap, CoinMetadata};
@@ -136,6 +136,14 @@ module wormhole_ntt::state {
         state.mode == MODE_BURNING
     }
 
+    public(friend) fun state_id(self: &State): ID {
+        object::uid_to_inner(&self.id)
+    }
+
+    public(friend) fun emitter_id(self: &State): ID {
+        object::id(&self.emitter_cap)
+    }
+
     /// borrow mut `TokenRegistry`
     public(friend) fun borrow_mut_token_registry(
         self: &mut State
@@ -203,6 +211,12 @@ module wormhole_ntt::state {
         token_registry::add_new_native_token(&mut self.token_registry, coin_meta, treasury_cap);
     }
 
+    public(friend) fun check_native_token<CoinType>(
+        self: &mut State,
+    ): bool {
+        token_registry::has<CoinType>(&mut self.token_registry)
+    }
+
     public(friend) fun add_new_nft<T>(
         self: &mut State,
         treasury_cap: NftTreasuryCap<T>,
@@ -254,6 +268,20 @@ module wormhole_ntt::state {
                 peer_decimals: decimals
             });
         }
+    }
+
+    public(friend) fun check_manager_peer(
+        state: &mut State,
+        peer_chain_id: u16
+    ): bool {
+        table::contains(&state.manager_peers, peer_chain_id)
+    }
+
+    public(friend) fun check_transceiver_peer(
+        state: &mut State,
+        peer_chain_id: u16
+    ): bool {
+        table::contains(&state.transceiver_peers, peer_chain_id)
     }
 
     /// set Wormhole transceiver peer info

@@ -10,7 +10,7 @@ Install the `Aptos` CLI. This tool is used to compile the contracts and run the 
 
 ## Design Overview
 
-### Message Lifecycle (Sui)
+### Message Lifecycle (Aptos)
 
 1. **transfer**
 

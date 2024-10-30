@@ -5,28 +5,28 @@ module wormhole_ntt::redeem_message {
     friend wormhole_ntt::ntt_manager;
     friend wormhole_ntt::ntt_transceiver;
 
-    struct RedeemMessage<phantom T> {
+    struct RedeemMessage {
         emitter_chain: u16,
         source_ntt_manager_address: NttExternalAddress,
         parsed_ntt_manager_message: NttManagerMessage,
     }
 
-    public(friend) fun new<T>(
+    public(friend) fun new(
         emitter_chain: u16,
         source_ntt_manager_address: NttExternalAddress,
         parsed_ntt_manager_message: NttManagerMessage,
-    ): RedeemMessage<T> {
-        RedeemMessage<T> {
+    ): RedeemMessage {
+        RedeemMessage {
             emitter_chain,
             source_ntt_manager_address,
             parsed_ntt_manager_message
         }
     }
 
-    public(friend) fun into_redeem_message<T>(
-        message: RedeemMessage<T>
+    public(friend) fun into_redeem_message(
+        message: RedeemMessage
     ): (u16, NttExternalAddress, NttManagerMessage) {
-        let RedeemMessage<T> {
+        let RedeemMessage {
             emitter_chain,
             source_ntt_manager_address,
             parsed_ntt_manager_message
